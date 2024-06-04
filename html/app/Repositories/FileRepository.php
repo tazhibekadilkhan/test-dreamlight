@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\File;
+use Symfony\Component\Console\Input\Input;
 
 class FileRepository extends BaseRepository
 {
@@ -11,10 +12,11 @@ class FileRepository extends BaseRepository
         $this->model = $model;
     }
 
-    public function index(array $relations = [])
+    public function index(array $relations = []): array
     {
+        $totalFilesCount = $this->model->count();
 
-        return $this->model
+        $files = $this->model
             ->with($relations)
             ->when(
                 request('search'),
@@ -23,6 +25,20 @@ class FileRepository extends BaseRepository
                 }
             )
             ->orderBy($this->sortBy, $this->sortOrder)
-            ->paginate($this->paginate);
+            ->paginate($this->paginate)
+            ->setPath(route('files.index'))
+            ->appends(request()->query());
+
+
+        $currentPageFilesCount = $files->count();
+
+
+
+        return [
+            'search' => request('search') ?? '',
+            'files' => $files,
+            'totalFilesCount' => $totalFilesCount,
+            'currentPageFilesCount' => $currentPageFilesCount,
+        ];
     }
 }

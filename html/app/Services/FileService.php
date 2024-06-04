@@ -5,8 +5,11 @@ namespace App\Services;
 use App\Repositories\FileRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Imagick\Driver;
+use Inertia\Inertia;
+use Inertia\Response;
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\File as FileFacade;
 
 class FileService
 {
@@ -18,8 +21,14 @@ class FileService
         $this->repository = $repository;
     }
 
-    public function index(): JsonResponse {
-        return response()->json(['data' => ['items' => $this->repository->index()]]);
+    public function index(): Response
+    {
+        return Inertia::render('Index', $this->repository->index());
+    }
+
+    public function fetch(): array
+    {
+        return $this->repository->index();
     }
 
     public function store(array $data): JsonResponse {
@@ -31,7 +40,7 @@ class FileService
 
         $data = $file;
 
-        return response()->json(['data' => $this->repository->create($data)]);
+        return response()->json(['file' => $this->repository->create($data)]);
     }
 
     public function show($item): JsonResponse
@@ -59,8 +68,15 @@ class FileService
 
     public function destroy($item): JsonResponse
     {
-        Storage::delete($item->path);
-        Storage::delete($item->thumbnail);
+        if (Storage::exists('/public/'. str_replace('/storage/', '', $item->path))) {
+            Storage::delete('/public/' . str_replace('/storage/', '', $item->path));
+        }
+
+        if (Storage::exists('/public/'. str_replace('/storage/', '', $item->thumbnail))) {
+            Storage::delete('/public/' . str_replace('/storage/', '', $item->thumbnail));
+        }
+
+        $item->delete();
 
         return response()->json(['data' => 'successfully deleted a file.']);
     }
@@ -69,7 +85,8 @@ class FileService
     {
         return [
             'name' => $file->getClientOriginalName(),
-            'size' => $file->getSize(),
+            'name_original' => $file->getClientOriginalName(),
+            'size' => round($file->getSize() / 1048576, 1),
             'extension' => $file->getClientOriginalExtension(),
             'path' => $file->store('files', 'public'),
             'thumbnail' => $this->makeThumbnail($file)

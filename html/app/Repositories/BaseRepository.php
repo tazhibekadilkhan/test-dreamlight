@@ -11,7 +11,7 @@ class BaseRepository
     protected string $sortBy = 'id';
     protected string $sortOrder = 'DESC';
 
-    protected int $paginate = 50;
+    protected int $paginate = 5;
 
     /**
      * @var Model

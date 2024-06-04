@@ -2,12 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class File extends Model
 {
-//    use HasFactory;
+    protected $fillable = ['name', 'name_original', 'size', 'extension', 'path', 'thumbnail'];
 
-    protected $fillable = ['name', 'size', 'extension', 'path', 'thumbnail'];
+    public function getPathAttribute(): string
+    {
+        return '/storage/' . $this->attributes['path'];
+    }
+
+    public function getThumbnailAttribute(): string
+    {
+        return '/storage/' . $this->attributes['thumbnail'];
+    }
+
+    public function getSizeAttribute(): string
+    {
+        return $this->attributes['size'] . 'MB';
+    }
 }

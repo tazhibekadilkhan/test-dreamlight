@@ -22,6 +22,11 @@ class FileController extends Controller
         return $this->service->index();
     }
 
+    public function fetch()
+    {
+        return $this->service->fetch();
+    }
+
     public function store(FileRequest $request)
     {
         return $this->service->store($request->validated());

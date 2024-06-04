@@ -6,6 +6,7 @@ import DropdownLink from '../Components/DropdownLink.vue';
 import NavLink from '../Components/NavLink.vue';
 import ResponsiveNavLink from '../Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const showingNavigationDropdown = ref(false);
 </script>
