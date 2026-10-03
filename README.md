@@ -1,47 +1,48 @@
-## 1. Если необходимо, отредактируйте пути в файле `docker-compose.yml`.
+## 1. If necessary, update the paths in the `docker-compose.yml` file.
 
-## 2. Перейдите в директорию / и выполните следующие команды:
-   ``` 
-   docker-compose build 
-   docker-compose up -d
+## 2. Navigate to the root directory (`/`) and run the following commands:
+
+```bash
+docker-compose build
+docker-compose up -d
 ```
 
-## 3. Проверьте, запустились ли контейнеры:
- ``` 
- docker ps -a
- ```
+## 3. Check whether the containers are running:
 
-Должно выглядеть так:
-
+```bash
+docker ps -a
 ```
+
+The output should look like this:
+
+```bash
 c641f3a91181   nginx:1.13-alpine      "nginx -g 'daemon of…"   10 hours ago   Up 10 hours   0.0.0.0:8888->80/tcp     test_nginx
 953d9acbc614   php:8.2.1-fpm          "docker-php-entrypoi…"   10 hours ago   Up 10 hours   0.0.0.0:9000->9000/tcp   test_php
 81fe68292b66   postgres:14.7-alpine   "docker-entrypoint.s…"   10 hours ago   Up 10 hours   0.0.0.0:5432->5432/tcp   test_postgres
 ```
 
-## 4. Затем перейти в bash контейнера php:
-   ```
-   docker exec -it test_php bash
-   ```
+## 4. Access the PHP container's bash shell:
 
-## 5. Поставить все зависимости:
-   ``` 
-   composer install
-   ```
+```bash
+docker exec -it test_php bash
+```
 
-## 6. скопировать .env.example to .env
+## 5. Install all dependencies:
 
+```bash
+composer install
+```
 
-## 7. Поставить миграции бд:
-``` 
+## 6. Copy `.env.example` to `.env`.
+
+## 7. Run the database migrations:
+
+```bash
 php artisan migrate
 ```
 
-## 8. перейти по ссылке
+## 8. Open the following URL in your browser:
 
-```
+```text
 http://localhost:8888/files
-
 ```
-
-
